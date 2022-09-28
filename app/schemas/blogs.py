@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 
+from app.schemas.users import Owner
+
 
 class PostRequest(BaseModel):
     title: str
@@ -17,6 +19,8 @@ class PostResponse(BaseModel):
     rating: int
     is_published: bool
     inserted_dt: datetime
+    user_id: int
+    owner: Owner
 
     class Config:
         orm_mode = True

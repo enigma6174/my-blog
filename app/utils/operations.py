@@ -22,11 +22,16 @@ def insert(_db, _post):
         return _post
 
 
-def update(_db, _id, _table, _payload):
+def update(_db, _id, _uid, _table, _payload):
     try:
         query = _db.query(_table).filter(_table.bid == _id)
-        if not query.first():
+        post = query.first()
+
+        if not post:
             raise Exception(f"No data found for id {_id}")
+
+        if post.user_id != int(_uid):
+            raise Exception(f"Unauthorized action")
 
         query.update(_payload, synchronize_session=False)
         _db.commit()
@@ -37,11 +42,17 @@ def update(_db, _id, _table, _payload):
         return query.first()
 
 
-def delete(_db, _id, _table):
+def delete(_db, _id, _uid, _table):
     try:
         query = _db.query(_table).filter(_table.bid == _id)
-        if not query.first():
+        post = query.first()
+
+        if not post:
             raise Exception(f"No data found for id {_id}")
+
+        if post.user_id != int(_uid):
+            raise Exception("Unauthorized action")
+
         query.delete(synchronize_session=False)
         _db.commit()
     except Exception as e:
