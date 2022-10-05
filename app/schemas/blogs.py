@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, conint
 from datetime import datetime
 from typing import Optional
 
@@ -24,3 +24,8 @@ class PostResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class BlogVote(BaseModel):
+    bid: int
+    dir: conint(ge=0, le=1)
