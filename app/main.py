@@ -1,10 +1,7 @@
 from fastapi import FastAPI
 
-from app.config import settings
 from app.routes import posts, users, auth, voting
 
-
-print(settings.DB_HOST)
 
 app = FastAPI()
 

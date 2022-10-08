@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, status, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from typing import Any
 
@@ -19,7 +19,7 @@ def vote(data: BlogVote,
 
     try:
         if not db.query(FastapiBlogPost).filter(FastapiBlogPost.bid == data.bid).first():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No data found for BID {data.bid}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No Data Found")
 
         query = db.query(FastapiVoting).filter(FastapiVoting.blog_id == data.bid,
                                                FastapiVoting.user_id == current_user.uid)
@@ -28,13 +28,13 @@ def vote(data: BlogVote,
         if data.dir == 1:
             if result:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                                    detail=f"user {current_user.uid} already voted on {data.bid}")
+                                    detail=f"User Has Already Voted")
 
             new_vote = FastapiVoting(blog_id=data.bid, user_id=current_user.uid)
             db.add(new_vote)
         else:
             if not result:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No voting data found")
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Data Found")
 
             query.delete(synchronize_session=False)
     except Exception as e:
