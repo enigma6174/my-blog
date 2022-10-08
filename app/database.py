@@ -4,8 +4,13 @@ from sqlalchemy.orm import sessionmaker
 
 from app.config import settings
 
-SQLALCHEMY_DATABASE_URL = f"""mysql+pymysql://
-{settings.DB_USERNAME}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"""
+user = settings.DB_USERNAME
+password = settings.DB_PASSWORD
+host = settings.DB_HOST
+port = settings.DB_PORT
+database = settings.DB_NAME
+
+SQLALCHEMY_DATABASE_URL = f"""mysql+pymysql://{user}:{password}@{host}:{port}/{database}"""
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 

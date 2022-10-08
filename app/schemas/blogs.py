@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, conint
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Any
 
 from app.schemas.users import Owner
 
@@ -12,7 +12,7 @@ class PostRequest(BaseModel):
     rating: Optional[int] = 0
 
 
-class PostResponse(BaseModel):
+class PostData(BaseModel):
     bid: int
     title: str
     content: str
@@ -24,3 +24,16 @@ class PostResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class PostResponse(BaseModel):
+    FastapiBlogPost: PostData
+    likes: int
+
+    class Config:
+        orm_mode = True
+
+
+class BlogVote(BaseModel):
+    bid: int
+    dir: conint(ge=0, le=1)

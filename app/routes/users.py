@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from app.models.users import FastapiUsers
 from app.schemas.users import UserCreate, UserSend
 from app.utils.password import hash_password
-from app.utils.operations import insert
 from app.database import get_db
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -16,9 +15,13 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
         hashed_password = hash_password(user.password)
         user.password = hashed_password
 
-        modified_user = FastapiUsers(**user.dict())
-        new_user = insert(db, modified_user)
+        new_user = FastapiUsers(**user.dict())
+
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"{e}")
     else:
         return new_user
